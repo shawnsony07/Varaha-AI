@@ -1,0 +1,5 @@
+{
+  "model": "Edge Impulse FOMO",
+  "tier": 1,
+  "note": "Evaluation metrics and confusion matrix — populate with Edge Impulse export data"
+}

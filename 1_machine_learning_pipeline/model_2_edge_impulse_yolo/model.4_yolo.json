@@ -1,0 +1,6 @@
+{
+  "model": "Edge Impulse YOLO",
+  "tier": 2,
+  "mAP50": 77.4,
+  "note": "COCO evaluation metrics — populate with Edge Impulse export data"
+}
