@@ -1,4 +1,4 @@
-# Varaha AI: Autonomous Edge-AI Wildlife Deterrence & Long-Range Telemetry Swarm 🐗📡
+# Varaha AI: Autonomous Wild Boar Deterrent & Long-Range Telemetry Swarm 🐗📡
 
 <p align="center">
   <img src="docs/images/logo-varaha.png" width="250" alt="Varaha AI Logo">
