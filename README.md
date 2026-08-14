@@ -9,6 +9,8 @@
 ![SRAM Footprint](https://img.shields.io/badge/SRAM_Footprint-198_KiB-orange)
 ![mAP50](https://img.shields.io/badge/mAP@50-70.2%25-blueviolet)
 
+**Repository Link:** https://github.com/shawnsony07/Varaha-AI
+
 **Demonstration Video:** *Coming Soon*
 
 ---
