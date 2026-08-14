@@ -27,8 +27,10 @@
 ## 💡 Project Overview
 **Varaha AI** is an intelligent, dual-node agricultural protection system combining on-device Swift-YOLO vision models, 35 kHz analog ultrasonic deterrence, and P2P LoRa telemetry. 
 
-**What makes it interesting and why it should win:** 
-Varaha AI bridges the gap between cutting-edge TinyML and raw analog electronics. Instead of simply running a model to log data, it optimizes a custom neural network to run with **100% NPU offload on the Arm Ethos-U55**, using the inference output to trigger a highly specific acoustic hardware deterrent over an entirely off-grid LoRa mesh network. By driving the model footprint down to just **198 KiB of SRAM** and completely eliminating CPU fallbacks, Varaha AI perfectly demonstrates how extreme optimization enables complex AI workflows on low-power edge devices.
+**Why 35 kHz Ultrasonic Deterrence?** 
+While human hearing typically tops out around 20 kHz, wild boars possess a significantly higher auditory range. When the vision model detects a threat, it triggers a targeted 35 kHz ultrasonic sweep. This causes acute auditory discomfort that drives the boars away from crops, while remaining completely silent and harmless to farmers and local residents.
+
+Varaha AI bridges the gap between cutting-edge TinyML and raw analog electronics. Instead of simply running a model to log data, it optimizes a custom neural network to run with **100% NPU offload on the Arm Ethos-U55**, using the inference output to trigger this specific acoustic hardware deterrent over an entirely off-grid LoRa mesh network. By driving the model footprint down to just **198 KiB of SRAM** and completely eliminating CPU fallbacks, Varaha AI perfectly demonstrates how extreme optimization enables complex AI workflows on low-power edge devices.
 
 ---
 
