@@ -46,24 +46,28 @@ Varaha AI was engineered to solve this crisis by providing a completely autonomo
 ## 🚀 The Optimization Journey (Arm-Specific Acceleration)
 To meet the rigorous latency, memory, and power constraints of edge deployment, we conducted a three-tier model optimization process. Our goal was to maximize **Arm-specific optimization**, **model compactness**, and **inference speed** for the Grove Vision AI V2 (Arm Cortex-M55 + Ethos-U55).
 
-### 📊 Model Comparison Overview
+### 📊 Comprehensive 3-Model Benchmark Comparison
 
-| Metric | Model 1: FOMO | Model 2: YOLO | Model 3: Swift-YOLO ✅ |
-| :--- | :---: | :---: | :---: |
-| **Framework** | Edge Impulse | Edge Impulse | SSCMA + Vela |
-| **Architecture** | FOMO (Centroid) | Bounding Box YOLO | Swift-YOLO (INT8) |
-| **mAP@50** | — | 77.4% | **70.2%** |
-| **Overall mAP** | — | 41.9% | — |
-| **Precision** | 45.3% | — | — |
-| **Recall** | 14.1% | 49.4% | **54.9%** |
-| **F1-Score** | 21.5% | — | — |
-| **SRAM Footprint** | — | — | **198.00 KiB** |
-| **Off-Chip Flash** | — | — | **1024.70 KiB** |
-| **Compute Workload** | — | — | **123.6 M MACs / inference** |
-| **NPU Offload Rate** | — | Partial | **100.0% (175/175 ops)** |
-| **CPU Fallback Rate** | — | Yes | **0.0% (0 ops)** |
-| **Quantization** | None | None | **INT8** |
-| **Vela Compiled** | ❌ | ❌ | ✅ |
+| Metric / Parameter | Model 1: Edge Impulse FOMO | Model 2: Edge Impulse YOLO | Model 3: Swift-YOLO (SSCMA — Production) |
+| :--- | :--- | :--- | :--- |
+| **Pipeline / Framework** | Edge Impulse | Edge Impulse | Google Colab / SSCMA (ModelAssistant) |
+| **Detection Task Type** | Centroid / Point Detection | Bounding Box Detection | Bounding Box Detection |
+| **Model Architecture** | MobileNetV1 0.35 (FOMO) | MobileNetV2-YOLOv5 | Swift-YOLO Tiny (CSPDarknet + PAFPN) |
+| **Input Resolution** | 96 × 96 | 160 × 160 | **192 × 192** |
+| **Quantization Precision** | INT8 | INT8 | **INT8** |
+| **mAP@50 (IoU=0.50)** | N/A *(Centroid Model)* | 77.4% | **70.2%** |
+| **mAP@50:95 (Overall mAP)** | N/A *(Centroid Model)* | 41.9% | **37.7%** |
+| **mAP@75 (IoU=0.75)** | N/A *(Centroid Model)* | 44.4% | **38.1%** |
+| **Precision** | 45.3% | ~51.6% | **68.4%** |
+| **Recall (Overall)** | 14.1% | 49.4% | **54.9%** |
+| **Recall (Large Objects)** | N/A | 57.4% | **61.8%** |
+| **F1-Score** | 21.5% | ~50.5% | **60.9%** |
+| **NPU Offload Rate** | Unverified (Partial CPU) | Unverified (Partial CPU) | **100.0% (175 / 175 Operators)** |
+| **CPU Fallback Rate** | High | Moderate | **0.0% (0 Operators)** |
+| **SRAM Footprint** | Unknown | Unknown | **198.00 KiB** |
+| **Off-Chip Flash Size** | ~1.2 MB | ~1.5 MB | **1024.70 KiB (1.02 MB)** |
+| **Compute Workload** | ~30 M MACs | ~90 M MACs | **123.6 M MACs / inference** |
+| **Target Arm Hardware** | Arm Ethos-U55 / Cortex-M55 | Arm Ethos-U55 / Cortex-M55 | **Arm Ethos-U55 NPU (500 MHz, 64 MACs/cycle)** |
 
 ---
 
