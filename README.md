@@ -9,42 +9,85 @@
 ![SRAM Footprint](https://img.shields.io/badge/SRAM_Footprint-198_KiB-orange)
 ![mAP50](https://img.shields.io/badge/mAP@50-70.2%25-blueviolet)
 
-**Demonstration Video:** [Insert YouTube/Vimeo Link Here]
+**Demonstration Video:** *Coming Soon*
 
 ---
 
 ## 📖 Table of Contents
 1. [Project Overview](#-project-overview)
 2. [Inspiration & Problem Statement](#-inspiration--problem-statement)
-3. [The Optimization Journey (Arm-Specific Acceleration)](#-the-optimization-journey-arm-specific-acceleration)
-4. [Functionality & Hardware Architecture](#%EF%B8%8F-functionality--hardware-architecture)
-5. [Repository Structure](#-repository-structure)
-6. [Setup Instructions](#-setup-instructions)
-7. [License](#-license)
+3. [Functionality & Output](#-functionality--output)
+4. [The Optimization Journey (Arm-Specific Acceleration)](#-the-optimization-journey-arm-specific-acceleration)
+5. [Hardware Architecture](#%EF%B8%8F-hardware-architecture)
+6. [Repository Structure](#-repository-structure)
+7. [Setup Instructions](#-setup-instructions)
+8. [License](#-license)
 
 ---
 
 ## 💡 Project Overview
-**Varaha AI** is an intelligent, dual-node agricultural protection system combining on-device Swift-YOLO vision models, 35 kHz analog ultrasonic deterrence, and P2P LoRa telemetry. 
 
-**Why 35 kHz Ultrasonic Deterrence?** 
+**Varaha AI** is an intelligent, dual-node agricultural protection system combining on-device Swift-YOLO vision models, 35 kHz analog ultrasonic deterrence, and P2P LoRa telemetry.
+
+**Why 35 kHz Ultrasonic Deterrence?**
 While human hearing typically tops out around 20 kHz, wild boars possess a significantly higher auditory range. When the vision model detects a threat, it triggers a targeted 35 kHz ultrasonic sweep. This causes acute auditory discomfort that drives the boars away from crops, while remaining completely silent and harmless to farmers and local residents.
 
-Varaha AI bridges the gap between cutting-edge TinyML and raw analog electronics. Instead of simply running a model to log data, it optimizes a custom neural network to run with **100% NPU offload on the Arm Ethos-U55**, using the inference output to trigger this specific acoustic hardware deterrent over an entirely off-grid LoRa mesh network. By driving the model footprint down to just **198 KiB of SRAM** and completely eliminating CPU fallbacks, Varaha AI perfectly demonstrates how extreme optimization enables complex AI workflows on low-power edge devices.
+**Why Varaha AI should win:**
+Varaha AI is not a software-only optimization — it is a complete, field-deployable AI system that closes the loop from raw pixel inference to physical deterrence hardware. We achieved **100% NPU offload** on the Arm Ethos-U55 with **zero CPU fallbacks**, running a production Swift-YOLO model in just **198 KiB of SRAM** — an extreme memory constraint that required the full Arm Vela compilation pipeline. This tight integration of Arm-accelerated TinyML inference with custom analog electronics, off-grid LoRa telemetry, and a 3D-printed weatherproof enclosure demonstrates what Arm-powered edge AI can do in the real world: protect livelihoods, eliminate cloud dependency, and run indefinitely on a battery in a field.
+
+![High Level Architecture](docs/high_level_architecture.png)
 
 ---
 
 ## 🌍 Inspiration & Problem Statement
-Human-wildlife conflict—specifically destructive foraging by wild boars—causes severe agricultural losses for farming communities worldwide, with the crisis reaching a breaking point in Kerala, India. Kerala's wild boar population grew by more than **40%** over 15 years, reaching approximately 58,000 in 2019. These highly adaptable animals breed quickly and feed indiscriminately, heavily damaging essential local crops like tapioca, sweet potatoes, and plantains. 
 
-Beyond economic devastation—where some farmers report daily losses up to **Rs 150** and suffer through a broken compensation system—the boars pose a severe physical threat. Wild boars are responsible for sudden, unprovoked attacks and human fatalities occurring entirely outside of forested areas. Traditional solutions like electric fencing are expensive to install and maintain across vast acreage, while manual patrols are hazardous and unsustainable. 
+Human-wildlife conflict—specifically destructive foraging by wild boars—causes severe agricultural losses for farming communities worldwide, with the crisis reaching a breaking point in Kerala, India. Kerala's wild boar population grew by more than **40%** over 15 years, reaching approximately 58,000 in 2019. These highly adaptable animals breed quickly and feed indiscriminately, heavily damaging essential local crops like tapioca, sweet potatoes, and plantains.
+
+Beyond economic devastation—where some farmers report daily losses up to **Rs 150** and suffer through a broken compensation system—the boars pose a severe physical threat. Wild boars are responsible for sudden, unprovoked attacks and human fatalities occurring entirely outside of forested areas. Traditional solutions like electric fencing are expensive to install and maintain across vast acreage, while manual patrols are hazardous and unsustainable.
 
 Varaha AI was engineered to solve this crisis by providing a completely autonomous, field-deployable shield. By coupling hardware-accelerated computer vision at the far edge with targeted ultrasonic harassment and long-range radio alerts, farmers get real-time crop protection without relying on cellular infrastructure or cloud connectivity.
 
 ---
 
+## ⚡ Functionality & Output
+
+Varaha AI operates as a fully autonomous detection-to-deterrence pipeline. Here is the complete end-to-end flow triggered by a single boar detection event:
+
+```
+OV5647 Camera (Field Node)
+        │
+        ▼
+Grove Vision AI V2 — WiseEye2 HX6538
+  ├─ Arm Cortex-M55 (Host)
+  └─ Arm Ethos-U55 NPU
+       └─ Swift-YOLO INT8 Model (model_vela.tflite)
+            └─ 100% NPU Offload → Bounding Box + Confidence Score
+                    │
+                    ▼ (I2C)
+        XIAO ESP32-S3 Plus (Logic Controller)
+          ├─ Detection confirmed → triggers 14.8V Relay
+          │     └─ Analog Ultrasonic Circuit fires 35 kHz sweep
+          │           (CD4060B → TL072 → LM13700 → MOSFET → Piezo Transducer)
+          └─ LoRa packet transmitted via Grove Wio-E5 (868/915 MHz)
+                    │
+                    ▼ (P2P Radio, up to several km)
+        XIAO ESP32-C6 (Base Station)
+          └─ Decodes: Detection Flag, RSSI, SNR
+                │ (I2C)
+                ▼
+        Wio Terminal — TFT UI Dashboard
+          └─ Live alert displayed: detection count, signal strength, network status
+```
+
+**Final Output:** A boar is detected, silently repelled via targeted 35 kHz ultrasound (inaudible and harmless to humans), and the farmer receives an instant visual alert on a dashboard up to several kilometres away — all with zero cloud connectivity and zero CPU fallbacks on the Arm Ethos-U55 NPU.
+
+---
+
 ## 🚀 The Optimization Journey (Arm-Specific Acceleration)
+
 To meet the rigorous latency, memory, and power constraints of edge deployment, we conducted a three-tier model optimization process. Our goal was to maximize **Arm-specific optimization**, **model compactness**, and **inference speed** for the Grove Vision AI V2 (Arm Cortex-M55 + Ethos-U55).
+
+![Machine Learning Pipeline](docs/machine_learning_pipeline.png)
 
 ### 📊 Comprehensive 3-Model Benchmark Comparison
 
@@ -125,12 +168,14 @@ Our final iteration utilized a custom **Swift-YOLO** architecture trained via Se
 
 ---
 
-## ⚙️ Functionality & Hardware Architecture
+## ⚙️ Hardware Architecture
 
 Varaha AI operates on a seamless dual-node architecture.
 
 ### 1. Field Node (Slave)
-The Field Node acts as the silent watcher. An OV5647 camera feeds live video into the **Grove Vision AI V2**. A **XIAO ESP32-S3 Plus** acts as the logic controller, querying the vision module via I2C and handling LoRa UART transmission via a **Grove Wio-E5**. 
+The Field Node acts as the silent watcher. An OV5647 camera feeds live video into the **Grove Vision AI V2**. A **XIAO ESP32-S3 Plus** acts as the logic controller, querying the vision module via I2C and handling LoRa UART transmission via a **Grove Wio-E5**.
+
+![Field Node Wiring Diagram](docs/field_node_diagram.png)
 
 #### ⚡ Custom Analog Ultrasonic Deterrent Circuit
 When a boar is detected, the S3 triggers a 14.8V relay. This powers a custom-engineered analog circuit featuring a **4.48 MHz crystal oscillator** and **CD4060B** binary counter/divider to generate a precise base frequency. The signal is buffered via a **TL072 op-amp**, shaped by an **LM13700 OTA**, and driven through a power MOSFET and 100 µH boost inductor into a piezoelectric transducer, blasting a 35 kHz sweep.
@@ -180,25 +225,75 @@ Varaha-AI/
 
 ## 🛠️ Setup Instructions
 
+### Prerequisites — Arduino Libraries
+Install the following libraries via the Arduino IDE Library Manager before compiling:
+
+| Library | Board Target |
+| :--- | :--- |
+| `Seeed Arduino SSCMA` | XIAO ESP32-S3 (Vision AI I2C) |
+| `Seeed_Arduino_LoRaWan` | XIAO ESP32-S3 & C6 (Wio-E5 UART) |
+| `Seeed Arduino rpcWiFi` | Wio Terminal |
+| `Seeed Arduino FS` | Wio Terminal |
+| `Seeed Arduino SFUD` | Wio Terminal |
+| `TFT_eSPI` | Wio Terminal (TFT Display) |
+
+Board package URLs to add in Arduino IDE → Preferences:
+```
+https://files.seeedstudio.com/arduino/package_seeeduino_boards_index.json
+```
+
+---
+
 ### 1. Build and Flash the ESP32 & Wio Terminal Nodes
 1. Open the Arduino IDE.
 2. Navigate to `2_edge_node_firmware/` and open the respective `.ino` files.
-3. Select your target boards (XIAO ESP32-S3, XIAO ESP32-C6, or Wio Terminal) from the Boards Manager.
-4. Compile and upload the code to each respective micro-controller.
+3. Select your target boards from the Boards Manager:
+
+| File | Target Board |
+| :--- | :--- |
+| `field_slave_node_s3/HogWatch-lora-vision.ino` | XIAO ESP32-S3 |
+| `base_master_node_c6/HogWatch_esp32_c6_wio_terminal.ino` | XIAO ESP32-C6 |
+| `wio_terminal_display/HogWatch_wio_terminal.ino` | Seeed Wio Terminal |
+
+4. Compile and upload the code to each respective microcontroller.
+
+---
 
 ### 2. Deploy the Optimized Model to the Arm Ethos-U55
 The highly-optimized NPU model must be flashed to the Grove Vision AI V2 (WiseEye2 HX6538) via the XMODEM protocol using the provided Python toolset.
 
 1. Connect the Grove Vision AI V2 to your computer via USB-C.
-2. Install the flashing dependencies in your terminal:
+2. Install the flashing dependencies:
 ```bash
 pip install -r tools/xmodem_flasher/requirements.txt
 ```
-3. Run the XMODEM flashing script to deploy the firmware and the `model_vela.tflite` payload:
+3. Run the XMODEM flashing script to deploy the `model_vela.tflite` payload:
 ```bash
 python3 tools/xmodem_flasher/xmodem_send.py --port=COM_PORT --baudrate=921600 --protocol=xmodem --file=firmware.img --model="1_machine_learning_pipeline/model_3_swift_yolo_sscma/compiled_artifacts/model_vela.tflite 0x200000 0x00000"
 ```
-*(Note: Replace `COM_PORT` with your respective Serial Port, e.g., `COM3` on Windows or `/dev/ttyUSB0` on Linux/macOS).*
+*(Replace `COM_PORT` with your Serial Port, e.g., `COM3` on Windows or `/dev/ttyUSB0` on Linux/macOS)*
+
+---
+
+### 3. Validate Inference on an Arm64 Environment
+To validate that the Vela-compiled model runs correctly on an Arm Cortex-M55 + Ethos-U55 target without physical hardware, use the **Arm Virtual Hardware (AVH)** or the **Ethos-U NPU driver simulator**:
+
+```bash
+# Install Arm's ethos-u-vela toolchain (for re-compilation or inspection)
+pip install ethos-u-vela
+
+# Inspect operator offload summary of the compiled model
+vela 1_machine_learning_pipeline/model_3_swift_yolo_sscma/compiled_artifacts/model_vela.tflite \
+     --accelerator-config=ethos-u55-64 \
+     --system-config=Ethos_U55_High_End_Embedded \
+     --output-dir=./vela_validation_output
+
+# Review output — confirm 175/175 operators on NPU, 0 on CPU
+cat vela_validation_output/epoch_100_int8_summary_Ethos_U55_High_End_Embedded.csv
+```
+
+The pre-compiled benchmark CSV is also available at:
+`1_machine_learning_pipeline/model_3_swift_yolo_sscma/compiled_artifacts/epoch_100_int8_summary_Ethos_U55_High_End_Embedded.csv`
 
 ---
 
