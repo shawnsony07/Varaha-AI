@@ -1,5 +1,9 @@
 # Varaha AI: Autonomous Edge-AI Wildlife Deterrence & Long-Range Telemetry Swarm 🐗📡
 
+<p align="center">
+  <img src="docs/images/logo-varaha.png" width="250" alt="Varaha AI Logo">
+</p>
+
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 ![NPU Offload](https://img.shields.io/badge/Arm_Ethos--U55_Offload-100%25-brightgreen)
 ![SRAM Footprint](https://img.shields.io/badge/SRAM_Footprint-198_KiB-orange)
