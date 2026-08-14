@@ -180,11 +180,21 @@ Our final iteration utilized a custom **Swift-YOLO** architecture trained via Se
 
 **The Optimization Victory:** We successfully traded a marginal 7.2% drop in mAP@50 to achieve a **100% Arm NPU execution rate**. By eliminating all CPU fallbacks and shrinking the active memory footprint to under 200 KiB of SRAM, Varaha AI achieves maximum FPS and drastically lower power consumption for continuous battery-operated field deployment.
 
+<p align="center">
+  <img src="docs/images/Image-detection.png" width="600" alt="Swift-YOLO Wild Boar Detection">
+  <br><i>Figure 3: On-device bounding box detection via Swift-YOLO</i>
+</p>
+
 ---
 
 ## ⚙️ Hardware Architecture
 
 Varaha AI operates on a seamless dual-node architecture.
+
+<p align="center">
+  <img src="docs/images/final-setup.png" width="800" alt="Varaha AI Final Hardware Setup">
+  <br><i>Figure 4: The fully assembled Varaha AI Field Node and Base Station</i>
+</p>
 
 ### 1. Field Node (Slave)
 The Field Node acts as the silent watcher. An OV5647 camera feeds live video into the **Grove Vision AI V2**. A **XIAO ESP32-S3 Plus** acts as the logic controller, querying the vision module via I2C and transmitting LoRa packets via UART to a **Grove Wio-E5** (AT test mode, raw P2P — not LoRaWAN).
@@ -203,7 +213,7 @@ The Field Node acts as the silent watcher. An OV5647 camera feeds live video int
 
 <p align="center">
   <img src="docs/field_node_diagram.png" alt="Field Node Wiring Diagram">
-  <br><i>Figure 3: Field Node (Slave) Wiring Diagram</i>
+  <br><i>Figure 5: Field Node (Slave) Wiring Diagram</i>
 </p>
 
 #### ⚡ Custom Analog Ultrasonic Deterrent Circuit
@@ -218,7 +228,7 @@ The node is housed in a custom-designed, 3D-printable enclosure (`HogWatch_Case_
 
 <p align="center">
   <img src="3_hardware_and_circuits/cad_enclosure/enclosure_preview.png" width="600">
-  <br><i>Figure 4: 3D-printable Weather-Resistant Enclosure</i>
+  <br><i>Figure 6: 3D-printable Weather-Resistant Enclosure</i>
 </p>
 
 ### 2. Base Station (Master)
@@ -226,7 +236,7 @@ Located at the farmhouse, a **XIAO ESP32-C6** listens for P2P radio transmission
 
 <p align="center">
   <img src="docs/base_master_diagram.png" alt="Base Master Diagram">
-  <br><i>Figure 5: Base Station (Master) Wiring Diagram</i>
+  <br><i>Figure 7: Base Station (Master) Wiring Diagram</i>
 </p>
 
 ---
