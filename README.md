@@ -72,7 +72,7 @@ flowchart TD
     MDL["⚡ Swift-YOLO INT8\nmodel_vela.tflite\n100% NPU Offload\nBounding Box + Confidence Score"]:::model
     S3["🎛️ XIAO ESP32-S3 Plus\nLogic Controller"]:::logic
     DET["🔊 Analog Ultrasonic Circuit\n35 kHz Sweep\nCD4060B → TL072 → LM13700\n→ MOSFET → Piezo Transducer"]:::deterrent
-    LORA["📡 Grove Wio-E5\nLoRa P2P Transmission\n868 / 915 MHz"]:::lora
+    LORA["📡 Grove Wio-E5\nLoRa P2P · 866 MHz\nSF12 · BW125 · 14 dBm"]:::lora
     C6["📻 XIAO ESP32-C6\nBase Station\nDecodes: Flag · RSSI · SNR"]:::base
     WIO["🖥️ Wio Terminal\nTFT UI Dashboard\nLive Alerts · Signal Strength · Network Status"]:::display
 
@@ -181,7 +181,19 @@ Our final iteration utilized a custom **Swift-YOLO** architecture trained via Se
 Varaha AI operates on a seamless dual-node architecture.
 
 ### 1. Field Node (Slave)
-The Field Node acts as the silent watcher. An OV5647 camera feeds live video into the **Grove Vision AI V2**. A **XIAO ESP32-S3 Plus** acts as the logic controller, querying the vision module via I2C and handling LoRa UART transmission via a **Grove Wio-E5**.
+The Field Node acts as the silent watcher. An OV5647 camera feeds live video into the **Grove Vision AI V2**. A **XIAO ESP32-S3 Plus** acts as the logic controller, querying the vision module via I2C and transmitting LoRa packets via UART to a **Grove Wio-E5** (AT test mode, raw P2P — not LoRaWAN).
+
+**LoRa RF Configuration (TX):**
+
+| Parameter | Value |
+| :--- | :--- |
+| Frequency | **866 MHz** |
+| Spreading Factor | **SF12** |
+| Bandwidth | **125 kHz** |
+| TX Power | **14 dBm** |
+| Preamble Length | 12 |
+| Protocol | Raw P2P Packet (`AT+TEST=TXLRPKT`) |
+| Payload | Detection flag (`SEEED` + `01`/`00`) |
 
 ![Field Node Wiring Diagram](docs/field_node_diagram.png)
 
@@ -198,7 +210,7 @@ The node is housed in a custom-designed, 3D-printable enclosure (`HogWatch_Case_
 <img src="3_hardware_and_circuits/cad_enclosure/enclosure_preview.png" width="600">
 
 ### 2. Base Station (Master)
-Located at the farmhouse, a **XIAO ESP32-C6** catches long-range P2P radio transmissions at 868/915 MHz using a second Wio-E5. It decodes the telemetry (Detection Flag, RSSI, SNR) and pushes it via I2C to a **Wio Terminal**, rendering a color TFT UI Dashboard that provides live alerts and network diagnostics.
+Located at the farmhouse, a **XIAO ESP32-C6** listens for P2P radio transmissions on **866 MHz** using a second Wio-E5 configured identically (`AT+TEST=RFCFG,866,SF12,125,12,15,14`). On packet reception, it decodes the telemetry (Detection Flag, RSSI, SNR) and pushes it via I2C to a **Wio Terminal**, rendering a color TFT UI Dashboard with live alerts and network diagnostics.
 
 ![Base Master Diagram](docs/base_master_diagram.png)
 
