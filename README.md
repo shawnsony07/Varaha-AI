@@ -1,13 +1,13 @@
-﻿# Varaha AI — Wiring Diagrams
+# Varaha AI — Wiring Diagrams
 
 ---
 
 ## 1. Field Node Pictorial Wiring Diagram
 
-![Field Node Pictorial Wiring Diagram](images/field_node_diagram.png)
+![Field Node Pictorial Wiring Diagram](docs/field_node_diagram.png)
 
 ---
 
 ## 2. Base Station Pictorial Wiring Diagram
 
-![Base Station Pictorial Wiring Diagram](images/base_station_diagram.png)
+![Base Station Pictorial Wiring Diagram](docs/base_master_diagram.png)
