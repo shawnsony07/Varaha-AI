@@ -74,9 +74,9 @@ flowchart TD
     VIS["🧠 Grove Vision AI V2\nWiseEye2 HX6538\nArm Cortex-M55 + Ethos-U55 NPU"]:::npu
     MDL["⚡ Swift-YOLO INT8\nmodel_vela.tflite\n100% NPU Offload\nBounding Box + Confidence Score"]:::model
     S3["🎛️ XIAO ESP32-S3 Plus\nLogic Controller"]:::logic
-    DET["🔊 Analog Ultrasonic Circuit\n35 kHz Sweep\nCD4060B → TL072 → LM13700\n→ MOSFET → Piezo Transducer"]:::deterrent
-    LORA["📡 Grove Wio-E5\nLoRa P2P · 866 MHz\nSF12 · BW125 · 14 dBm"]:::lora
-    C6["📻 XIAO ESP32-C6\nBase Station\nDecodes: Flag · RSSI · SNR"]:::base
+    DET["🔊 Analog Ultrasonic Circuit\n35 kHz Sweep\nCD4060B -> TL072 -> LM13700\n-> MOSFET -> Piezo Transducer"]:::deterrent
+    LORA["📡 Grove Wio-E5\nLoRa P2P | 866 MHz\nSF12 | BW125 | 14 dBm"]:::lora
+    C6["📻 XIAO ESP32-C6\nBase Station\nDecodes: Flag | RSSI | SNR"]:::base
     WIO["🖥️ Wio Terminal\nTFT UI Dashboard\nLive Alerts · Signal Strength · Network Status"]:::display
 
     CAM -->|"Video Feed"| VIS
@@ -84,7 +84,7 @@ flowchart TD
     MDL -->|"I2C — Detection Result"| S3
     S3 -->|"Triggers 14.8V Relay"| DET
     S3 -->|"UART — LoRa Packet"| LORA
-    LORA -->|"P2P Radio · up to several km"| C6
+    LORA -->|"P2P Radio | up to several km"| C6
     C6 -->|"I2C"| WIO
 ```
 
@@ -271,16 +271,15 @@ Install the following libraries via the Arduino IDE Library Manager before compi
 | `TFT_eSPI` | Wio Terminal (TFT Display) |
 
 Board package URLs to add in Arduino IDE → Preferences:
-```
-https://files.seeedstudio.com/arduino/package_seeeduino_boards_index.json
-```
+`https://files.seeedstudio.com/arduino/package_seeeduino_boards_index.json`
 
 ---
 
 ### 1. Build and Flash the ESP32 & Wio Terminal Nodes
-1. Open the Arduino IDE.
-2. Navigate to `2_edge_node_firmware/` and open the respective `.ino` files.
-3. Select your target boards from the Boards Manager:
+1. Wire your hardware components according to the Pictorial Wiring Diagrams (Figures 3 and 5).
+2. Open the Arduino IDE.
+3. Navigate to `2_edge_node_firmware/` and open the respective `.ino` files.
+4. Select your target boards from the Boards Manager:
 
 | File | Target Board |
 | :--- | :--- |
@@ -288,7 +287,7 @@ https://files.seeedstudio.com/arduino/package_seeeduino_boards_index.json
 | `base_master_node_c6/HogWatch_esp32_c6_wio_terminal.ino` | XIAO ESP32-C6 |
 | `wio_terminal_display/HogWatch_wio_terminal.ino` | Seeed Wio Terminal |
 
-4. Compile and upload the code to each respective microcontroller.
+5. Compile and upload the code to each respective microcontroller.
 
 ---
 
@@ -300,19 +299,41 @@ The highly-optimized NPU model must be flashed to the Grove Vision AI V2 (WiseEy
 ```bash
 pip install -r tools/xmodem_flasher/requirements.txt
 ```
+
 3. Run the XMODEM flashing script to deploy the `model_vela.tflite` payload:
+
 ```bash
 python3 tools/xmodem_flasher/xmodem_send.py --port=COM_PORT --baudrate=921600 --protocol=xmodem --file=firmware.img --model="1_machine_learning_pipeline/model_3_swift_yolo_sscma/compiled_artifacts/model_vela.tflite 0x200000 0x00000"
 ```
+
 *(Replace `COM_PORT` with your Serial Port, e.g., `COM3` on Windows or `/dev/ttyUSB0` on Linux/macOS)*
 
 ---
 
-### 3. Validate Inference on an Arm64 Environment
-To validate that the Vela-compiled model runs correctly on an Arm Cortex-M55 + Ethos-U55 target without physical hardware, use the **Arm Virtual Hardware (AVH)** or the **Ethos-U NPU driver simulator**:
+### 3. Run & Validate on the Physical Arm-Powered Device
+
+Once the model is flashed to the Grove Vision AI V2, you can validate the NPU inference and the full hardware pipeline:
+
+1. **Power the System:** Power on the Base Station (XIAO ESP32-C6) and the Field Node (Grove Vision AI V2 + XIAO ESP32-S3).
+2. **Monitor the Edge Node:** Connect the Field Node's XIAO ESP32-S3 to your computer and open a Serial Monitor at `115200` baud.
+3. **Trigger a Detection:** Point the Grove Vision AI V2 camera at a wild boar (or a monitor displaying an image/video of a wild boar).
+4. **Validate NPU Output:** In the Serial Monitor, confirm the I2C payload transfer from the Arm Cortex-M55/Ethos-U55:
+```text
+Vision: Wild boar detected! Score=82, Box=[x,y,w,h]
+LoRa TX: Wild boar DETECTED
+```
+
+5. **Validate Hardware Deterrent:** Listen for the physical "click" of the 14.8V relay activating the analog ultrasonic deterrent circuit.
+6. **Validate LoRa Telemetry:** Look at the Wio Terminal screen. The UI will instantly shift from a green **"FIELD CLEAR"** status to a flashing red **"BOAR DETECTED!"** alert.
+
+---
+
+### 4. Validate Inference via Arm Virtual Hardware (AVH) / CLI
+
+To validate that the Vela-compiled model runs correctly on an Arm Cortex-M55 + Ethos-U55 target *without* physical hardware, use the Ethos-U NPU driver simulator:
 
 ```bash
-# Install Arm's ethos-u-vela toolchain (for re-compilation or inspection)
+# Install Arm's ethos-u-vela toolchain
 pip install ethos-u-vela
 
 # Inspect operator offload summary of the compiled model
@@ -324,9 +345,6 @@ vela 1_machine_learning_pipeline/model_3_swift_yolo_sscma/compiled_artifacts/mod
 # Review output — confirm 175/175 operators on NPU, 0 on CPU
 cat vela_validation_output/epoch_100_int8_summary_Ethos_U55_High_End_Embedded.csv
 ```
-
-The pre-compiled benchmark CSV is also available at:
-`1_machine_learning_pipeline/model_3_swift_yolo_sscma/compiled_artifacts/epoch_100_int8_summary_Ethos_U55_High_End_Embedded.csv`
 
 ---
 
