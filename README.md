@@ -11,7 +11,7 @@
 
 **Repository Link:** https://github.com/shawnsony07/Varaha-AI
 
-**Demonstration Video:** *Coming Soon*
+**Demonstration Video:** [Watch on YouTube](https://youtu.be/mFBCUHmKaQ8)
 
 ---
 
