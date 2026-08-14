@@ -55,30 +55,33 @@ Varaha AI was engineered to solve this crisis by providing a completely autonomo
 
 Varaha AI operates as a fully autonomous detection-to-deterrence pipeline. Here is the complete end-to-end flow triggered by a single boar detection event:
 
-```
-OV5647 Camera (Field Node)
-        │
-        ▼
-Grove Vision AI V2 — WiseEye2 HX6538
-  ├─ Arm Cortex-M55 (Host)
-  └─ Arm Ethos-U55 NPU
-       └─ Swift-YOLO INT8 Model (model_vela.tflite)
-            └─ 100% NPU Offload → Bounding Box + Confidence Score
-                    │
-                    ▼ (I2C)
-        XIAO ESP32-S3 Plus (Logic Controller)
-          ├─ Detection confirmed → triggers 14.8V Relay
-          │     └─ Analog Ultrasonic Circuit fires 35 kHz sweep
-          │           (CD4060B → TL072 → LM13700 → MOSFET → Piezo Transducer)
-          └─ LoRa packet transmitted via Grove Wio-E5 (868/915 MHz)
-                    │
-                    ▼ (P2P Radio, up to several km)
-        XIAO ESP32-C6 (Base Station)
-          └─ Decodes: Detection Flag, RSSI, SNR
-                │ (I2C)
-                ▼
-        Wio Terminal — TFT UI Dashboard
-          └─ Live alert displayed: detection count, signal strength, network status
+```mermaid
+flowchart TD
+    classDef camera    fill:#FFD700,stroke:#333,stroke-width:2px,color:#000
+    classDef npu       fill:#00C853,stroke:#333,stroke-width:2px,color:#000
+    classDef model     fill:#69F0AE,stroke:#333,stroke-width:2px,color:#000
+    classDef logic     fill:#40C4FF,stroke:#333,stroke-width:2px,color:#000
+    classDef deterrent fill:#FF6D00,stroke:#333,stroke-width:2px,color:#000
+    classDef lora      fill:#E040FB,stroke:#333,stroke-width:2px,color:#000
+    classDef base      fill:#FF4081,stroke:#333,stroke-width:2px,color:#000
+    classDef display   fill:#18FFFF,stroke:#333,stroke-width:2px,color:#000
+
+    CAM["📷 OV5647 Camera\nField Node"]:::camera
+    VIS["🧠 Grove Vision AI V2\nWiseEye2 HX6538\nArm Cortex-M55 + Ethos-U55 NPU"]:::npu
+    MDL["⚡ Swift-YOLO INT8\nmodel_vela.tflite\n100% NPU Offload\nBounding Box + Confidence Score"]:::model
+    S3["🎛️ XIAO ESP32-S3 Plus\nLogic Controller"]:::logic
+    DET["🔊 Analog Ultrasonic Circuit\n35 kHz Sweep\nCD4060B → TL072 → LM13700\n→ MOSFET → Piezo Transducer"]:::deterrent
+    LORA["📡 Grove Wio-E5\nLoRa P2P Transmission\n868 / 915 MHz"]:::lora
+    C6["📻 XIAO ESP32-C6\nBase Station\nDecodes: Flag · RSSI · SNR"]:::base
+    WIO["🖥️ Wio Terminal\nTFT UI Dashboard\nLive Alerts · Signal Strength · Network Status"]:::display
+
+    CAM -->|"Video Feed"| VIS
+    VIS -->|"Runs inference"| MDL
+    MDL -->|"I2C — Detection Result"| S3
+    S3 -->|"Triggers 14.8V Relay"| DET
+    S3 -->|"UART — LoRa Packet"| LORA
+    LORA -->|"P2P Radio · up to several km"| C6
+    C6 -->|"I2C"| WIO
 ```
 
 **Final Output:** A boar is detected, silently repelled via targeted 35 kHz ultrasound (inaudible and harmless to humans), and the farmer receives an instant visual alert on a dashboard up to several kilometres away — all with zero cloud connectivity and zero CPU fallbacks on the Arm Ethos-U55 NPU.
