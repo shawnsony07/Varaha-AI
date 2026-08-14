@@ -1,7 +1,7 @@
 # Varaha AI: Autonomous Wild Boar Deterrent & Long-Range Telemetry Swarm 🐗📡
 
 <p align="center">
-  <img src="docs/images/logo-varaha.png" width="600" alt="Varaha AI Logo">
+  <img src="docs/images/logo-varaha.png" width="800" alt="Varaha AI Logo">
 </p>
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
@@ -38,7 +38,10 @@ While human hearing typically tops out around 20 kHz, wild boars possess a signi
 >
 > Beyond its ethical design, Varaha AI is not a software-only optimization — it is a complete, field-deployable AI system that closes the loop from raw pixel inference to physical deterrence hardware. We achieved **100% NPU offload** on the Arm Ethos-U55 with **zero CPU fallbacks**, running a production Swift-YOLO model in just **198 KiB of SRAM** — an extreme memory constraint that required the full Arm Vela compilation pipeline. This tight integration of Arm-accelerated TinyML inference with custom analog electronics, off-grid LoRa telemetry, and a 3D-printed weatherproof enclosure demonstrates what Arm-powered edge AI can do in the real world: protect livelihoods, eliminate cloud dependency, and run indefinitely on a battery in a field.
 
-![High Level Architecture](docs/high_level_architecture.png)
+<p align="center">
+  <img src="docs/high_level_architecture.png" alt="High Level Architecture">
+  <br><i>Figure 1: High Level Architecture of the Varaha AI System</i>
+</p>
 
 ---
 
@@ -94,7 +97,8 @@ flowchart TD
 To meet the rigorous latency, memory, and power constraints of edge deployment, we conducted a three-tier model optimization process. Our goal was to maximize **Arm-specific optimization**, **model compactness**, and **inference speed** for the Grove Vision AI V2 (Arm Cortex-M55 + Ethos-U55).
 
 <p align="center">
-  <img src="docs/machine_learning_pipeline.png" width="700" alt="Machine Learning Pipeline">
+  <img src="docs/machine_learning_pipeline.png" width="500" alt="Machine Learning Pipeline">
+  <br><i>Figure 2: Three-tier Machine Learning Optimization Pipeline</i>
 </p>
 
 ### 📊 Comprehensive 3-Model Benchmark Comparison
@@ -195,7 +199,10 @@ The Field Node acts as the silent watcher. An OV5647 camera feeds live video int
 | Protocol | Raw P2P Packet (`AT+TEST=TXLRPKT`) |
 | Payload | Detection flag (`SEEED` + `01`/`00`) |
 
-![Field Node Wiring Diagram](docs/field_node_diagram.png)
+<p align="center">
+  <img src="docs/field_node_diagram.png" alt="Field Node Wiring Diagram">
+  <br><i>Figure 3: Field Node (Slave) Wiring Diagram</i>
+</p>
 
 #### ⚡ Custom Analog Ultrasonic Deterrent Circuit
 When a boar is detected, the S3 triggers a 14.8V relay. This powers a custom-engineered analog circuit featuring a **4.48 MHz crystal oscillator** and **CD4060B** binary counter/divider to generate a precise base frequency. The signal is buffered via a **TL072 op-amp**, shaped by an **LM13700 OTA**, and driven through a power MOSFET and 100 µH boost inductor into a piezoelectric transducer, blasting a 35 kHz sweep.
@@ -207,12 +214,18 @@ When a boar is detected, the S3 triggers a 14.8V relay. This powers a custom-eng
 #### 🛡️ Weather-Resistant 3D Enclosure
 The node is housed in a custom-designed, 3D-printable enclosure (`HogWatch_Case_v2.stl`) featuring a recessed optical viewport, passive ventilation grids for the power step-down (buck converter), an acoustic port for the ultrasonic transducer, and a precise top slit that allows the lid to seamlessly slide in and out for easy internal access.
 
-<img src="3_hardware_and_circuits/cad_enclosure/enclosure_preview.png" width="600">
+<p align="center">
+  <img src="3_hardware_and_circuits/cad_enclosure/enclosure_preview.png" width="600">
+  <br><i>Figure 4: 3D-printable Weather-Resistant Enclosure</i>
+</p>
 
 ### 2. Base Station (Master)
 Located at the farmhouse, a **XIAO ESP32-C6** listens for P2P radio transmissions on **866 MHz** using a second Wio-E5 configured identically (`AT+TEST=RFCFG,866,SF12,125,12,15,14`). On packet reception, it decodes the telemetry (Detection Flag, RSSI, SNR) and pushes it via I2C to a **Wio Terminal**, rendering a color TFT UI Dashboard with live alerts and network diagnostics.
 
-![Base Master Diagram](docs/base_master_diagram.png)
+<p align="center">
+  <img src="docs/base_master_diagram.png" alt="Base Master Diagram">
+  <br><i>Figure 5: Base Station (Master) Wiring Diagram</i>
+</p>
 
 ---
 
