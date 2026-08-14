@@ -44,34 +44,83 @@ Varaha AI was engineered to solve this crisis by providing a completely autonomo
 ---
 
 ## 🚀 The Optimization Journey (Arm-Specific Acceleration)
-To meet the rigorous latency, memory, and power constraints of edge deployment, we conducted a three-tier model optimization process. Our goal was to maximize **Arm-specific optimization**, **Model size**, and **Model speed** for the Grove Vision AI V2 (Arm Cortex-M55 + Ethos-U55).
+To meet the rigorous latency, memory, and power constraints of edge deployment, we conducted a three-tier model optimization process. Our goal was to maximize **Arm-specific optimization**, **model compactness**, and **inference speed** for the Grove Vision AI V2 (Arm Cortex-M55 + Ethos-U55).
+
+### 📊 Model Comparison Overview
+
+| Metric | Model 1: FOMO | Model 2: YOLO | Model 3: Swift-YOLO ✅ |
+| :--- | :---: | :---: | :---: |
+| **Framework** | Edge Impulse | Edge Impulse | SSCMA + Vela |
+| **Architecture** | FOMO (Centroid) | Bounding Box YOLO | Swift-YOLO (INT8) |
+| **mAP@50** | — | 77.4% | **70.2%** |
+| **Overall mAP** | — | 41.9% | — |
+| **Precision** | 45.3% | — | — |
+| **Recall** | 14.1% | 49.4% | **54.9%** |
+| **F1-Score** | 21.5% | — | — |
+| **SRAM Footprint** | — | — | **198.00 KiB** |
+| **Off-Chip Flash** | — | — | **1024.70 KiB** |
+| **Compute Workload** | — | — | **123.6 M MACs / inference** |
+| **NPU Offload Rate** | — | Partial | **100.0% (175/175 ops)** |
+| **CPU Fallback Rate** | — | Yes | **0.0% (0 ops)** |
+| **Quantization** | None | None | **INT8** |
+| **Vela Compiled** | ❌ | ❌ | ✅ |
+
+---
 
 ### Model 1: Edge Impulse FOMO (The Baseline Prototype)
 We initially tested a Faster Objects, More Objects (FOMO) centroid-detection architecture for its extreme speed.
-*   **Precision:** 45.3%
-*   **Recall:** 14.1%
-*   **F1-Score:** 21.5%
-*   **Conclusion:** FOMO failed to capture the spatial context and varied postures of wild boars in dynamic outdoor environments. The low recall made it unviable for agricultural protection.
+
+| Parameter | Value |
+| :--- | :--- |
+| Architecture | FOMO (Centroid Detection) |
+| Precision | 45.3% |
+| Recall | 14.1% |
+| F1-Score | 21.5% |
+| Bounding Box Output | ❌ No |
+| NPU Optimized | ❌ No |
+
+> **Conclusion:** FOMO failed to capture the spatial context and varied postures of wild boars in dynamic outdoor environments. The critically low recall made it unviable for field protection.
+
+---
 
 ### Model 2: Edge Impulse YOLO (The Accuracy Benchmark)
-We escalated to a standard Bounding Box YOLO model to establish a target accuracy threshold.
-*   **mAP@50:** 77.4%
-*   **Overall mAP:** 41.9%
-*   **Recall:** 49.4%
-*   **Conclusion:** While highly accurate, standard YOLO ops frequently result in partial CPU fallbacks when deployed to micro-NPUs, creating latency bottlenecks and increasing power consumption.
+We escalated to a standard Bounding Box YOLO model to establish a target accuracy ceiling.
 
-### Model 3: Swift-YOLO via SSCMA (The Final Optimized Build)
-Our final iteration utilized a custom **Swift-YOLO** architecture trained via Seeed Studio ModelAssistant (SSCMA). We INT8-quantized the model and compiled it specifically for the **Arm Ethos-U55 NPU** using the Vela toolchain.
+| Parameter | Value |
+| :--- | :--- |
+| Architecture | Bounding Box YOLO |
+| mAP@50 | 77.4% |
+| Overall mAP | 41.9% |
+| Recall | 49.4% |
+| Bounding Box Output | ✅ Yes |
+| NPU Optimized | ❌ Partial (CPU fallbacks) |
 
-*   **mAP@50:** 70.2%
-*   **Recall:** 54.9%
-*   **SRAM Footprint:** 198.00 KiB
-*   **Off-Chip Flash Footprint:** 1024.70 KiB
-*   **Compute Workload:** 123.6 M MACs / inference
-*   **NPU Offload Rate:** **100.0% (175 / 175 Operators)**
-*   **CPU Fallback Rate:** **0.0% (0 Operators)**
+> **Conclusion:** While highly accurate, standard YOLO ops frequently result in partial CPU fallbacks when deployed to micro-NPUs, creating latency bottlenecks and increased power draw.
 
-**The Optimization Victory:** We successfully traded a marginal 7.2% drop in mAP@50 to achieve a **100% Arm NPU execution rate**. By eliminating all CPU fallbacks and shrinking the active memory footprint to under 200 KiB of SRAM, Varaha AI achieves maximum frames-per-second (FPS) and drastically lower power consumption for continuous battery-operated field deployment.
+---
+
+### Model 3: Swift-YOLO via SSCMA (The Final Optimized Build) ✅
+Our final iteration utilized a custom **Swift-YOLO** architecture trained via Seeed Studio ModelAssistant (SSCMA), INT8-quantized and compiled for the **Arm Ethos-U55 NPU** using the Vela toolchain.
+
+| Parameter | Value |
+| :--- | :--- |
+| Architecture | Swift-YOLO (INT8 Quantized) |
+| Training Framework | SSCMA (Seeed Studio ModelAssistant) |
+| Compiler | Arm Vela |
+| Target Hardware | Grove Vision AI V2 (WiseEye2 HX6538) |
+| Target NPU | Arm Ethos-U55 |
+| mAP@50 | **70.2%** |
+| Recall | **54.9%** |
+| SRAM Footprint | **198.00 KiB** |
+| Off-Chip Flash Footprint | **1024.70 KiB** |
+| Compute Workload | **123.6 M MACs / inference** |
+| Total Operators | 175 |
+| NPU Offload Rate | **100.0% (175 / 175 operators)** |
+| CPU Fallback Rate | **0.0% (0 operators)** |
+| Quantization | INT8 |
+| Vela Compiled | ✅ Yes |
+
+**The Optimization Victory:** We successfully traded a marginal 7.2% drop in mAP@50 to achieve a **100% Arm NPU execution rate**. By eliminating all CPU fallbacks and shrinking the active memory footprint to under 200 KiB of SRAM, Varaha AI achieves maximum FPS and drastically lower power consumption for continuous battery-operated field deployment.
 
 ---
 
