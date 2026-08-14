@@ -93,7 +93,9 @@ flowchart TD
 
 To meet the rigorous latency, memory, and power constraints of edge deployment, we conducted a three-tier model optimization process. Our goal was to maximize **Arm-specific optimization**, **model compactness**, and **inference speed** for the Grove Vision AI V2 (Arm Cortex-M55 + Ethos-U55).
 
-![Machine Learning Pipeline](docs/machine_learning_pipeline.png)
+<p align="center">
+  <img src="docs/machine_learning_pipeline.png" width="700" alt="Machine Learning Pipeline">
+</p>
 
 ### 📊 Comprehensive 3-Model Benchmark Comparison
 
