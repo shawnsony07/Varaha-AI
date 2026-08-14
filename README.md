@@ -1,7 +1,7 @@
 # Varaha AI: Autonomous Wild Boar Deterrent & Long-Range Telemetry Swarm 🐗📡
 
 <p align="center">
-  <img src="docs/images/logo-varaha.png" width="250" alt="Varaha AI Logo">
+  <img src="docs/images/logo-varaha.png" width="600" alt="Varaha AI Logo">
 </p>
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
