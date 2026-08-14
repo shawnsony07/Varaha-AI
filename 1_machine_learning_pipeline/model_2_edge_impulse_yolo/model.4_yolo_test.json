@@ -117,5 +117,123 @@
         }
       }
     }
+  },
+  "test": {
+    "int8": {
+      "support": 1937,
+      "coco_metrics": {
+        "MaP": 0.41854567965630546,
+        "MaP@[IoU=50]": 0.7740036864093758,
+        "MaP@[IoU=75]": 0.4441040250719316,
+        "MaP@[area=small]": 0.01782178217821782,
+        "MaP@[area=medium]": 0.16646260419105566,
+        "MaP@[area=large]": 0.4916913582601613,
+        "Recall@[max_detections=1]": 0.47081051478641844,
+        "Recall@[max_detections=10]": 0.49353778751369115,
+        "Recall@[max_detections=100]": 0.49353778751369115,
+        "Recall@[area=small]": 0.01627906976744186,
+        "Recall@[area=medium]": 0.25104712041884814,
+        "Recall@[area=large]": 0.574304068522484,
+        "support": {
+          "images": 1937,
+          "annotations": 2251,
+          "detections": 1797
+        }
+      },
+      "coco_map": 0.5328581929206848,
+      "class_names": [
+        "boar"
+      ],
+      "subgroup_metrics": {
+        "facetted": null,
+        "per_key": {
+          "class_name": {
+            "per_group": {
+              "boar": {
+                "support": 1937,
+                "coco_metrics": {
+                  "MaP": 0.41854567965630546,
+                  "MaP@[IoU=50]": 0.7740036864093758,
+                  "MaP@[IoU=75]": 0.4441040250719316,
+                  "MaP@[area=small]": 0.01782178217821782,
+                  "MaP@[area=medium]": 0.16646260419105566,
+                  "MaP@[area=large]": 0.4916913582601613,
+                  "Recall@[max_detections=1]": 0.47081051478641844,
+                  "Recall@[max_detections=10]": 0.49353778751369115,
+                  "Recall@[max_detections=100]": 0.49353778751369115,
+                  "Recall@[area=small]": 0.01627906976744186,
+                  "Recall@[area=medium]": 0.25104712041884814,
+                  "Recall@[area=large]": 0.574304068522484,
+                  "support": {
+                    "images": 1937,
+                    "annotations": 2251,
+                    "detections": 1797
+                  }
+                },
+                "coco_map": 0.5328581929206848
+              }
+            }
+          }
+        }
+      }
+    },
+    "float32": {
+      "support": 1937,
+      "coco_metrics": {
+        "MaP": 0.4256996081122,
+        "MaP@[IoU=50]": 0.773510399953821,
+        "MaP@[IoU=75]": 0.4576510401427538,
+        "MaP@[area=small]": 0.01782178217821782,
+        "MaP@[area=medium]": 0.16504626752764212,
+        "MaP@[area=large]": 0.4992151705873201,
+        "Recall@[max_detections=1]": 0.4784845132743364,
+        "Recall@[max_detections=10]": 0.5012721238938054,
+        "Recall@[max_detections=100]": 0.5012721238938054,
+        "Recall@[area=small]": 0.015217391304347827,
+        "Recall@[area=medium]": 0.26005291005291004,
+        "Recall@[area=large]": 0.5833092485549134,
+        "support": {
+          "images": 1937,
+          "annotations": 2251,
+          "detections": 1759
+        }
+      },
+      "coco_map": 0.528600811958313,
+      "class_names": [
+        "boar"
+      ],
+      "subgroup_metrics": {
+        "facetted": null,
+        "per_key": {
+          "class_name": {
+            "per_group": {
+              "boar": {
+                "support": 1937,
+                "coco_metrics": {
+                  "MaP": 0.4256996081122,
+                  "MaP@[IoU=50]": 0.773510399953821,
+                  "MaP@[IoU=75]": 0.4576510401427538,
+                  "MaP@[area=small]": 0.01782178217821782,
+                  "MaP@[area=medium]": 0.16504626752764212,
+                  "MaP@[area=large]": 0.4992151705873201,
+                  "Recall@[max_detections=1]": 0.4784845132743364,
+                  "Recall@[max_detections=10]": 0.5012721238938054,
+                  "Recall@[max_detections=100]": 0.5012721238938054,
+                  "Recall@[area=small]": 0.015217391304347827,
+                  "Recall@[area=medium]": 0.26005291005291004,
+                  "Recall@[area=large]": 0.5833092485549134,
+                  "support": {
+                    "images": 1937,
+                    "annotations": 2251,
+                    "detections": 1759
+                  }
+                },
+                "coco_map": 0.528600811958313
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
