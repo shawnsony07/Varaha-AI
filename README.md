@@ -90,7 +90,7 @@ When a boar is detected, the S3 triggers a 14.8V relay. This powers a custom-eng
 | <img src="3_hardware_and_circuits/schematics/35kHz_ultrasonic_analog_circuit.png" width="400"> | <img src="3_hardware_and_circuits/photos/analog_breadboard_prototype.jpg" width="400"> |
 
 #### 🛡️ Weather-Resistant 3D Enclosure
-The node is housed in a custom-designed, 3D-printable enclosure (`HogWatch_Case_v2.stl`) featuring a recessed optical viewport, passive ventilation grids for the power step-down (buck converter), and an acoustic port for the ultrasonic transducer.
+The node is housed in a custom-designed, 3D-printable enclosure (`HogWatch_Case_v2.stl`) featuring a recessed optical viewport, passive ventilation grids for the power step-down (buck converter), an acoustic port for the ultrasonic transducer, and a precise top slit that allows the lid to seamlessly slide in and out for easy internal access.
 
 <img src="3_hardware_and_circuits/cad_enclosure/enclosure_preview.png" width="600">
 
