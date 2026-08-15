@@ -11,7 +11,7 @@
 
 **Repository Link:** https://github.com/shawnsony07/Varaha-AI
 
-**Demonstration Video:** [Watch on YouTube](https://youtu.be/mFBCUHmKaQ8)
+**Demonstration Video:** [Watch on YouTube](https://youtu.be/mFBCUHmKaQ8) (Note: The frequency has been shifted into the audible range for this demo so you can hear it working!)
 
 ---
 
